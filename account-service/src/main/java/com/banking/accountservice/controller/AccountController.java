@@ -76,4 +76,18 @@ public class AccountController {
         return ResponseEntity.ok("Balance deducted Successfully");
 
     }
+/*
+*   SAGA STEP - 4
+* CREDIT BALANCE
+* called by transaction service in 2 scenarioes
+*  1 fraud detection - refund sender
+*  2 transaction completed Credit receiver
+* */
+    @PutMapping("/{accountNumber}/credit")
+    public ResponseEntity<String> creditBalance(@PathVariable String accountNumber , @RequestParam BigDecimal amount) {
+        accountService.creditBalance(accountNumber ,amount);
+        return ResponseEntity.ok("Balance deducted Successfully");
+    }
+
+
 }

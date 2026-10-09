@@ -8,6 +8,7 @@ import com.banking.accountservice.entity.AccountStatus;
 import com.banking.accountservice.entity.AccountType;
 import com.banking.accountservice.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +23,15 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-
+@Slf4j
 public class AccountService {
 
     private final AccountRepository accountRepository;
     private static final SecureRandom secureRandom = new SecureRandom();
 
     public AccountResponse createAccount(CreateAccountRequest request) {
+        log.info( "Creating account for {}", request.getEmail() );
+
         if(accountRepository.existsByEmail(request.getEmail())){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
@@ -135,9 +138,42 @@ public class AccountService {
     }
 
     public void blockAccount(String accountNumber) {
+        log.info(
+                "Account blocking for {}", accountNumber
+        );
 
         Account account = findAccountByAccountNumber(accountNumber);
 
         account.setAccountStatus(AccountStatus.BLOCKED);
+    }
+
+    public void deductBalance(String accountNumber, BigDecimal amount) {
+        Account account = findAccountByAccountNumber(accountNumber);
+
+        if(account.getAccountStatus() != (AccountStatus.ACTIVE)){
+        throw new RuntimeException("Account not active");
+        }
+
+        if(account.getBalance().compareTo(amount) < 0){
+            throw new RuntimeException("Insufficient balance");
+        }
+        account.setBalance(account.getBalance().subtract(amount));
+
+        log.info(
+                "Balance updated , New Balance {}", account.getBalance()
+        );
+    }
+
+    public void creditBalance(String accountNumber, BigDecimal amount) {
+        Account account = findAccountByAccountNumber(accountNumber);
+
+        if(account.getAccountStatus() != (AccountStatus.ACTIVE)){
+            throw new RuntimeException("Account not active");
+        }
+        account.setBalance(account.getBalance().add(amount));
+        log.info(
+                "Balance updated , New Balance {}", account.getBalance()
+        );
+
     }
 }
