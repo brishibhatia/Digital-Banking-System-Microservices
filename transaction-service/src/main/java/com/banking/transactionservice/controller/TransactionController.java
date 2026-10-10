@@ -22,17 +22,17 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<TransactionResponse> transfer(@Valid @RequestBody TransactionRequest transactionRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.transfer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.transfer(transactionRequest));
     }
 
     @GetMapping("/{transactionId}")
     public ResponseEntity<TransactionResponse> getTransaction(@PathVariable String transactionId) {
-        return ResponseEntity.ok(transactionService.getTransaction());
+        return ResponseEntity.ok(transactionService.getTransaction(transactionId));
     }
 
     @GetMapping("/account/{accountNumber}")
     public ResponseEntity<List<TransactionResponse>> getTransactionHistory(@PathVariable String accountNumber) {
-        return ResponseEntity.ok(transactionService.getTransactionHistory());
+        return ResponseEntity.ok(transactionService.getTransactionHistory(accountNumber));
     }
 
 

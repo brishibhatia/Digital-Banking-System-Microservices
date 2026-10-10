@@ -2,7 +2,9 @@ package com.banking.transactionservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "transaction")
 public class Transaction {
     @Id
